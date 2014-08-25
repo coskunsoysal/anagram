@@ -6,7 +6,11 @@ An anagram is a type of word play, the result of rearranging the letters of a wo
 More : http://en.wikipedia.org/wiki/Anagram
 
 ## Usage
+
 from unix terminal
-`python
->>>from anagram import Anagram
->>>Anagram().main()`
+
+`python`
+
+`>>>from anagram import Anagram`
+
+`>>>Anagram().main()`
