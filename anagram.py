@@ -17,6 +17,8 @@ class Anagram(object):
         self._DEFAULT_FILE = "wordsEn.txt"
         self.result = ""
         self.words_by_count = defaultdict(list)
+
+    def main(self):
         file = raw_input("Enter file name: ") or self._DEFAULT_FILE
         self.file = file
         list_of_words = self.file2words(self.file)
@@ -29,15 +31,19 @@ class Anagram(object):
         for wc in self.words_by_count:
             for word in self.words_by_count[wc]:
                 first = False
-                del self.words_by_count[wc][0]
+
+                del self.words_by_count[wc][self.words_by_count[wc].index(word)]
+
                 for word2 in self.words_by_count[wc]:
                     if self.is_anagram_of(word, word2):
-                        if first == False:
-                            count=count+1
-                            self.result += "".join([str(count),"   ", word,"   ", word2])
-                            first=True
+                        if first is False:
+                            count = count+1
+                            self.result += "".join([str(count), "   ", word, "   ", word2, "\n"])
+                            print "".join([str(count).rjust(6, ' '), "   ", word, "   ", word2, "\n"])
+                            first = True
                         else:
-                            self.result += "".join(["      ",word2])
+                            self.result += "".join(["      ", word2, "\n"])
+                            print ''.join(["            ", ' '*wc, word2, "\n"])
 
         self.write_to_file("result.txt",self.result)
 
@@ -64,10 +70,7 @@ class Anagram(object):
         :param word2:
         :return: True or False if they are anagram
         """
-        if len(word1) == len(word2):
-            return word1.lower!= word2.lower and word1 == ''.join(sorted(word2))
-        else:
-            return False
+        return ''.join(sorted(word1)) == ''.join(sorted(word2))
 
     def write_to_file(self, filename, anagrams):
         """
@@ -79,5 +82,3 @@ class Anagram(object):
         f = open(filename, "w")
         f.write(anagrams)
         f.close()
-
-Anagram()
