@@ -1,7 +1,6 @@
 __author__ = 'coskun.soysal'
 
 import sys
-from collections import defaultdict
 
 class Anagram(object):
 
@@ -16,36 +15,38 @@ class Anagram(object):
         """
         self._DEFAULT_FILE = "wordsEn.txt"
         self.result = ""
-        self.words_by_count = defaultdict(list)
+        self.anagrams = {}
 
     def main(self):
+        """
+        Main method which runs script
+        :return:
+        """
         file = raw_input("Enter file name: ") or self._DEFAULT_FILE
         self.file = file
         list_of_words = self.file2words(self.file)
 
         for word in list_of_words:
-            self.words_by_count[len(word)].append(word)
-        del list_of_words
+            self.anagrams.setdefault(self.order_chars(word), []).append(word)
 
         count = 0
-        for wc in self.words_by_count:
-            for word in self.words_by_count[wc]:
-                first = False
-
-                del self.words_by_count[wc][self.words_by_count[wc].index(word)]
-
-                for word2 in self.words_by_count[wc]:
-                    if self.is_anagram_of(word, word2):
-                        if first is False:
-                            count = count+1
-                            self.result += "".join([str(count), "   ", word, "   ", word2, "\n"])
-                            print "".join([str(count).rjust(6, ' '), "   ", word, "   ", word2, "\n"])
-                            first = True
-                        else:
-                            self.result += "".join(["      ", word2, "\n"])
-                            print ''.join(["            ", ' '*wc, word2, "\n"])
+        for words in self.anagrams.values():
+            if len(words) > 1:
+                count += 1
+                self.result += '%s. %s %s\n' % (str(count).rjust(5, '0'), words[0].ljust(17, ' '), words[1])
+                for word in words[2:]:
+                    self.result += '%s\n' %  word.rjust(25+len(word), ' ')
 
         self.write_to_file("result.txt",self.result)
+
+    def order_chars(self, word):
+        """
+        Order a stings letter alphabetically
+        :param word: raw word
+        :return: Ordered string
+        """
+        return ''.join(sorted(word))
+
 
     def file2words(self, file='wordEn.txt'):
         """
@@ -62,15 +63,6 @@ class Anagram(object):
         except IOError:
             print "%s is not a valid file." % file
             sys.exit()
-
-    def is_anagram_of(self, word1, word2):
-        """
-        Compare two words for anagram test
-        :param word1:
-        :param word2:
-        :return: True or False if they are anagram
-        """
-        return ''.join(sorted(word1)) == ''.join(sorted(word2))
 
     def write_to_file(self, filename, anagrams):
         """
